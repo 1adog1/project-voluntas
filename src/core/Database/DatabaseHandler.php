@@ -35,7 +35,8 @@
                     ["Name" => "type", "Type" => "TEXT"], 
                     ["Name" => "state", "Type" => "TEXT"], 
                     ["Name" => "scopes", "Type" => "TEXT"], 
-                    ["Name" => "expiration", "Type" => "BIGINT"]
+                    ["Name" => "expiration", "Type" => "BIGINT"], 
+                    ["Name" => "redirect", "Type" => "TEXT"]
                 ]
             ],
             [

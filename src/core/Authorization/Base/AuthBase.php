@@ -76,11 +76,27 @@
             
             $loginExpiration = time() + 300;
             
-            $pullLogin = $this->authorizationConnection->prepare("INSERT INTO logins (type, state, scopes, expiration) VALUES (:type, :state, :scopes, :expiration)");
+            $rawURL = urldecode($_SERVER["REQUEST_URI"]);
+            $parsedURL = parse_url($rawURL, PHP_URL_PATH);
+            $parsedPath = preg_split("@/@", $parsedURL, null, PREG_SPLIT_NO_EMPTY);
+            
+            if (count($parsedPath) >= 2 and $parsedPath[0] === "authenticate") {
+                
+                $loginRedirect = ("/authenticate/" . urlencode($parsedPath[1]). "/");
+                
+            }
+            else {
+                
+                $loginRedirect = null;
+                
+            }
+            
+            $pullLogin = $this->authorizationConnection->prepare("INSERT INTO logins (type, state, scopes, expiration, redirect) VALUES (:type, :state, :scopes, :expiration, :redirect)");
             $pullLogin->bindParam(":type", $type);
             $pullLogin->bindParam(":state", $state);
             $pullLogin->bindParam(":scopes", $scopes);
             $pullLogin->bindParam(":expiration", $loginExpiration);
+            $pullLogin->bindParam(":redirect", $loginRedirect);
             $pullLogin->execute();
             
         }
@@ -94,7 +110,7 @@
             
             if (!empty($loginData)) {
                 
-                return ["State" => $loginData["state"], "Type" => $loginData["type"], "Scopes" => $loginData["scopes"]];
+                return ["State" => $loginData["state"], "Type" => $loginData["type"], "Scopes" => $loginData["scopes"], "Redirect" => $loginData["redirect"]];
                 
             }
             else {
@@ -105,9 +121,18 @@
             
         }
         
-        protected function loginSuccess($characterID) {
+        protected function loginSuccess($characterID, $loginRedirect) {
             
-            $returnURL = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
+            if (is_null($loginRedirect)) {
+                
+                $returnURL = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
+                
+            }
+            else {
+                
+                $returnURL = $loginRedirect;
+                
+            }
             
             header("Location: " . $returnURL);
             die();
@@ -279,12 +304,12 @@
                                     
                                     if ($loginData["Type"] === "Default") {
                                     
-                                        $this->loginSuccess($accessCharacterID);
+                                        $this->loginSuccess($accessCharacterID, $loginData["Redirect"]);
                                         
                                     }
                                     else {
                                         
-                                        self::loginSuccess($accessCharacterID);
+                                        self::loginSuccess($accessCharacterID, $loginData["Redirect"]);
                                         
                                     }
                                     

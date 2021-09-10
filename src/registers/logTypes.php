@@ -22,5 +22,18 @@
             );
             
     */
+    
+    $siteLogger->register(
+        "poll-creation", 
+        "Poll Creation", 
+        "Poll Created"
+    );
+    
+    $siteLogger->register(
+        "token-authentication", 
+        "Token Authentication", 
+        "Authentication Success", 
+        "Authentication Failure"
+    );
 
 ?>

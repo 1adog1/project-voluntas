@@ -1,21 +1,13 @@
 <?php
 
-    namespace Ridley\Views\Home;
+    namespace Ridley\Views\Manage;
 
     class Templates {
         
         protected function mainTemplate() {
             ?>
             
-            <div class="row justify-content-center">
-                <div class="col-md-6">
-                    <div class="alert alert-primary text-center">
-                        <h4 class="alert-heading">Welcome to Project Voluntas!</h4>
-                        <hr>
-                        This app is used to help authenticate users' Google Form submissions using Eve Online's SSO. 
-                    </div>
-                </div>
-            </div>
+            
             
             <?php
         }

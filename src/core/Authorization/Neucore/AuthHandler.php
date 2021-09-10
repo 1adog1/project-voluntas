@@ -129,6 +129,112 @@
             
         }
         
+        private function setCoreStats() {
+            
+            $this->characterStats["Core ID"] = null;
+            $this->characterStats["Core Name"] = null;
+            
+            $accountSuccess = false;
+            $accountCallCounter = 0;
+            
+            while (!$accountSuccess and $accountCallCounter < 5) {
+                
+                $neucoreToken = base64_encode($this->authorizationVariables["NeuCore ID"] . ":" . $this->authorizationVariables["NeuCore Secret"]);
+            
+                $accountRequestURL = $this->authorizationVariables["NeuCore URL"] . "api/app/v1/player/" . $this->characterStats["Character ID"];
+                
+                $accountRequestOptions = ["http" => ["ignore_errors" => true, "method" => "GET", "header" => ["Content-Type:application/json", "Authorization: Bearer " . $neucoreToken]]];
+                $accountRequestContext = stream_context_create($accountRequestOptions);
+                
+                $accountResponse = file_get_contents($accountRequestURL, false, $accountRequestContext);
+                
+                $accountStatus = $http_response_header[0];
+                
+                if (str_contains($accountStatus, "200")) {
+                
+                    $accountResponseData = json_decode($accountResponse, true);
+                    
+                    $this->characterStats["Core ID"] = $accountResponseData["id"];
+                    $this->characterStats["Core Name"] = $accountResponseData["name"];
+                    
+                    $accountSuccess = true;
+                
+                }
+                elseif (str_contains($accountStatus, "404")) {
+                    
+                    $accountSuccess = true;
+                    
+                }
+                else {
+                    
+                    $accountSuccess = false;
+                    
+                }
+                
+                $accountCallCounter++;
+            
+            }
+            
+            if (!$accountSuccess) {
+                
+                trigger_error("Failed call to get core groups.", E_USER_ERROR);
+                
+            }
+            
+            $this->characterStats["Core Groups"] = [];
+            
+            $groupsSuccess = false;
+            $groupCallCounter = 0;
+            
+            while (!$groupsSuccess and $groupCallCounter < 5) {
+                
+                $neucoreToken = base64_encode($this->authorizationVariables["NeuCore ID"] . ":" . $this->authorizationVariables["NeuCore Secret"]);
+            
+                $groupsRequestURL = $this->authorizationVariables["NeuCore URL"] . "api/app/v2/groups/" . $this->characterStats["Character ID"];
+                
+                $groupsRequestOptions = ["http" => ["ignore_errors" => true, "method" => "GET", "header" => ["Content-Type:application/json", "Authorization: Bearer " . $neucoreToken]]];
+                $groupsRequestContext = stream_context_create($groupsRequestOptions);
+                
+                $groupsResponse = file_get_contents($groupsRequestURL, false, $groupsRequestContext);
+                
+                $groupsStatus = $http_response_header[0];
+                
+                if (str_contains($groupsStatus, "200")) {
+                
+                    $groupsResponseData = json_decode($groupsResponse, true);
+                    
+                    foreach ($groupsResponseData as $eachGroup) {
+                        
+                        $this->characterStats["Core Groups"][] = $eachGroup["name"];
+                        
+                    }
+                    
+                    $groupsSuccess = true;
+                
+                }
+                elseif (str_contains($groupsStatus, "404")) {
+                    
+                    $groupsSuccess = true;
+                    
+                }
+                else {
+                    
+                    $groupsSuccess = false;
+                    
+                }
+                
+                $groupCallCounter++;
+            
+            }
+            
+            if (!$groupsSuccess) {
+                
+                trigger_error("Failed call to get core groups.", E_USER_ERROR);
+                
+            }
+            
+        }
+        
         private function setCharacterStats($characterID) {
             
             $idsToConvert = [];
@@ -232,6 +338,7 @@
                         if ($this->isLoggedIn) {
                             
                             $this->setCharacterStats($sessionData["characterid"]);
+                            $this->setCoreStats();
                             
                             if (time() < $sessionData["recheck"]) {
                                 
@@ -381,11 +488,12 @@
             
         }
         
-        protected function loginSuccess($characterID) {
+        protected function loginSuccess($characterID, $loginRedirect) {
             
             if (!$this->isLoggedIn) {
                 
                 $this->setCharacterStats($characterID);
+                $this->setCoreStats();
                 $this->determineAccessRoles();
                 $this->isLoggedIn = true;
                 $this->setSession();
@@ -394,7 +502,16 @@
                 
                 $this->authorizationLogger->make_log_entry("Login Success", "Authorization Handler", $this->characterStats["Character Name"], $logString);
                 
-                $returnURL = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
+                if (is_null($loginRedirect)) {
+                    
+                    $returnURL = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
+                    
+                }
+                else {
+                    
+                    $returnURL = $loginRedirect;
+                    
+                }
                 
                 header("Location: " . $returnURL);
                 die();

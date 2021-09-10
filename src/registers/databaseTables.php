@@ -25,5 +25,32 @@
             );
             
     */
+    
+    $siteDatabase->register(
+        "polls", 
+        ["Name" => "id", "Type" => "TEXT"], 
+        ["Name" => "creatorid", "Type" => "BIGINT"], 
+        ["Name" => "verificationtoken", "Type" => "TEXT"], 
+        ["Name" => "percharacterlimit", "Type" => "TINYINT"], 
+        ["Name" => "percorelimit", "Type" => "TINYINT"], 
+        ["Name" => "allowedroles", "Type" => "LONGTEXT"], 
+        ["Name" => "starttime", "Type" => "BIGINT"], 
+        ["Name" => "endtime", "Type" => "BIGINT"]
+    );
+    
+    $siteDatabase->register(
+        "usertokens", 
+        ["Name" => "verificationtoken", "Type" => "TEXT"], 
+        ["Name" => "pollid", "Type" => "TEXT"], 
+        ["Name" => "charactername", "Type" => "TEXT", "Special" => "DEFAULT NULL"], 
+        ["Name" => "corename", "Type" => "TEXT", "Special" => "DEFAULT NULL"]
+    );
+    
+    $siteDatabase->register(
+        "usercounters", 
+        ["Name" => "userhash", "Type" => "TEXT"], 
+        ["Name" => "pollid", "Type" => "TEXT"], 
+        ["Name" => "counter", "Type" => "TINYINT"]
+    );
 
 ?>

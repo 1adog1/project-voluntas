@@ -37,12 +37,42 @@
         linkToUse: "unknown",
         nameToUse: "Page Not Found",
         codeToUse: "Unknown",
+        useController: true,
         inNav: false
     );
     
     
     
     
+    
+    
+    $this->registerPage(
+        linkToUse: "authenticate",
+        nameToUse: "Authenticate",
+        codeToUse: "Authenticate",
+        useModel: true,
+        useController: true,
+        inNav: false, 
+        loginRequired: true
+    );
+    
+    $this->registerPage(
+        linkToUse: "verify",
+        nameToUse: "Verify",
+        codeToUse: "Verify",
+        useAPI: true,
+        inNav: false
+    );
+    
+    $this->registerPage(
+        linkToUse: "manage",
+        nameToUse: "Manage Polls",
+        codeToUse: "Manage",
+        useModel: true,
+        useController: true,
+        loginRequired: true, 
+        accessRoles: ["Super Admin", "Create Polls"]
+    );
     
     //ADMINISTRATON PAGE
     $this->registerPage(

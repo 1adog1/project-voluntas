@@ -337,7 +337,7 @@
             
         }
         
-        protected function loginSuccess($characterID) {
+        protected function loginSuccess($characterID, $loginRedirect) {
             
             if (!$this->isLoggedIn) {
             
@@ -350,7 +350,16 @@
                 
                 $this->authorizationLogger->make_log_entry("Login Success", "Authorization Handler", $this->characterStats["Character Name"], $logString);
                 
-                $returnURL = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
+                if (is_null($loginRedirect)) {
+                    
+                    $returnURL = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
+                    
+                }
+                else {
+                    
+                    $returnURL = $loginRedirect;
+                    
+                }
                 
                 header("Location: " . $returnURL);
                 die();

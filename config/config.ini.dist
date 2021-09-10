@@ -10,7 +10,7 @@ ClientRedirect =
 ;The callback is handled by the backend rather than a specific page. It MUST include the URL Parameter 'core_action=callback'.
 AuthType = Neucore
 ;Eve: Controls access by character, corporation, and alliance.
-;Neucore: Uses Brave Neucore groups to control page access.
+;Neucore: Uses Brave Neucore groups to control page access. Adds support for restricting forms to specific core roles and per-account submission limitations. 
 SuperAdmins = 
 ;Super Admins is a set of comma-separated character IDs in integer form. No comma is required for only one group name.
 
