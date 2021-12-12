@@ -51,7 +51,7 @@
             
             if ($this->hasAPI === true) {
                 
-                if (isset($_SERVER["HTTP_CSRF_TOKEN"]) and $_SERVER["HTTP_CSRF_TOKEN"] === $this->csrfToken) {
+                if ($this->pageCode == "Verify" or (isset($_SERVER["HTTP_CSRF_TOKEN"]) and $_SERVER["HTTP_CSRF_TOKEN"] === $this->csrfToken)) {
                 
                     $apiClassName = "\\Ridley\\Apis\\" . $this->pageCode . "\\Api";
                     $this->pageAPI = new $apiClassName($this->dependencies);

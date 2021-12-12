@@ -20,6 +20,14 @@
             <?php
         }
         
+        protected function metaTemplate() {
+            ?>
+            
+            <title>Project Voluntas</title>
+            
+            <?php
+        }
+        
     }
 
     class View extends Templates implements \Ridley\Interfaces\View {
@@ -33,6 +41,12 @@
         public function renderContent() {
             
             $this->mainTemplate();
+            
+        }
+        
+        public function renderMeta() {
+            
+            $this->metaTemplate();
             
         }
         

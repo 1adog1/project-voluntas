@@ -53,7 +53,8 @@
         useModel: true,
         useController: true,
         inNav: false, 
-        loginRequired: true
+        loginRequired: true, 
+        accessRoles: ["Super Admin", "Submitter"]
     );
     
     $this->registerPage(
@@ -70,6 +71,7 @@
         codeToUse: "Manage",
         useModel: true,
         useController: true,
+        useAPI: true,
         loginRequired: true, 
         accessRoles: ["Super Admin", "Create Polls"]
     );

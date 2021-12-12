@@ -29,8 +29,10 @@
     $siteDatabase->register(
         "polls", 
         ["Name" => "id", "Type" => "TEXT"], 
+        ["Name" => "name", "Type" => "TEXT"], 
         ["Name" => "creatorid", "Type" => "BIGINT"], 
         ["Name" => "verificationtoken", "Type" => "TEXT"], 
+        ["Name" => "anonymity", "Type" => "TINYINT"], 
         ["Name" => "percharacterlimit", "Type" => "TINYINT"], 
         ["Name" => "percorelimit", "Type" => "TINYINT"], 
         ["Name" => "allowedroles", "Type" => "LONGTEXT"], 
