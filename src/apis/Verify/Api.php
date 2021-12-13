@@ -46,19 +46,21 @@
             
             if (!empty($responseData)) {
                 
-                $output = new \SimpleXMLElement("<?xml version='1.0' encoding='utf-8'?><xml></xml>");
+                $output = new \DOMDocument("1.0", "UTF-8");
+                $outputBase = $output->appendChild($output->createElement("xml"));
                 
                 foreach ($responseData as $eachResponse) {
                     
-                    $newResponder = $output->addChild("responder");
-                    $newResponder->addChild("verification-token", $eachResponse["verificationtoken"]);
-                    $newResponder->addChild("character-name", $eachResponse["charactername"]);
-                    $newResponder->addChild("core-name", $eachResponse["corename"]);
+                    $newResponder = $outputBase->appendChild($output->createElement("responder"));
+                    $newResponder->appendChild($output->createElement("verification-token", $eachResponse["verificationtoken"]));
+                    $newResponder->appendChild($output->createElement("character-name", $eachResponse["charactername"]));
+                    $newResponder->appendChild($output->createElement("core-name", $eachResponse["corename"]));
                     
                 }
                 
+                $output->formatOutput = true;
                 Header("Content-Type: text/xml");
-                echo $output->asXML();
+                echo $output->saveXML();
                 
             }
             else {
@@ -79,19 +81,21 @@
             
             if (!empty($responseData)) {
                 
-                $output = new \SimpleXMLElement("<?xml version='1.0' encoding='utf-8'?><xml></xml>");
+                $output = new \DOMDocument("1.0", "UTF-8");
+                $outputBase = $output->appendChild($output->createElement("xml"));
                 
                 foreach ($responseData as $eachResponse) {
                     
-                    $newResponder = $output->addChild("responder");
-                    $newResponder->addChild("verification-token", $eachResponse["verificationtoken"]);
-                    $newResponder->addChild("character-name", $eachResponse["charactername"]);
-                    $newResponder->addChild("core-name", $eachResponse["corename"]);
+                    $newResponder = $outputBase->appendChild($output->createElement("responder"));
+                    $newResponder->appendChild($output->createElement("verification-token", $eachResponse["verificationtoken"]));
+                    $newResponder->appendChild($output->createElement("character-name", $eachResponse["charactername"]));
+                    $newResponder->appendChild($output->createElement("core-name", $eachResponse["corename"]));
                     
                 }
                 
+                $output->formatOutput = true;
                 Header("Content-Type: text/xml");
-                echo $output->asXML();
+                echo $output->saveXML();
                 
             }
             else {
