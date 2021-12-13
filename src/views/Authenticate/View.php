@@ -108,7 +108,7 @@
                         <ul class="mt-3">
                             <li>Your character doesn't meet the requirements to access this poll.</li>
                             <li>You have exceeded your response limit for this poll.</li>
-                            <li>The poll hasn't started yet or has already ended.</li>
+                            <li>The poll hasn't started yet.</li>
                             <li>The poll has concluded.</li>
                             <li>The poll does not exist.</li>
                         </ul>
