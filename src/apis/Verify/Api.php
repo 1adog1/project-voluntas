@@ -46,21 +46,28 @@
             
             if (!empty($responseData)) {
                 
-                $output = new \DOMDocument("1.0", "UTF-8");
-                $outputBase = $output->appendChild($output->createElement("xml"));
+                header("Content-type: text/csv");
+                header("Cache-Control: no-store, no-cache");
+                header("Content-Disposition: attachment; filename=response_list.csv");
+                
+                $output = fopen("php://output", "w");
+                fputcsv($output, [
+                    "Verification Token", 
+                    "Character Name", 
+                    "Core Account"
+                ]);
                 
                 foreach ($responseData as $eachResponse) {
                     
-                    $newResponder = $outputBase->appendChild($output->createElement("responder"));
-                    $newResponder->appendChild($output->createElement("verification-token", $eachResponse["verificationtoken"]));
-                    $newResponder->appendChild($output->createElement("character-name", $eachResponse["charactername"]));
-                    $newResponder->appendChild($output->createElement("core-name", $eachResponse["corename"]));
+                    fputcsv($output, [
+                        $eachResponse["verificationtoken"], 
+                        $eachResponse["charactername"], 
+                        $eachResponse["corename"]
+                    ]);
                     
                 }
                 
-                $output->formatOutput = true;
-                Header("Content-Type: text/xml");
-                echo $output->saveXML();
+                fclose($output);
                 
             }
             else {
@@ -81,21 +88,26 @@
             
             if (!empty($responseData)) {
                 
-                $output = new \DOMDocument("1.0", "UTF-8");
-                $outputBase = $output->appendChild($output->createElement("xml"));
+                header("Content-type: text/csv");
+                header("Cache-Control: no-store, no-cache");
+                header("Content-Disposition: attachment; filename=response_verification.csv");
+
+                $output = fopen("php://output", "w");
                 
                 foreach ($responseData as $eachResponse) {
                     
-                    $newResponder = $outputBase->appendChild($output->createElement("responder"));
-                    $newResponder->appendChild($output->createElement("verification-token", $eachResponse["verificationtoken"]));
-                    $newResponder->appendChild($output->createElement("character-name", $eachResponse["charactername"]));
-                    $newResponder->appendChild($output->createElement("core-name", $eachResponse["corename"]));
+                    fputcsv($output, [
+                        "Verification Token", 
+                        $eachResponse["verificationtoken"], 
+                        "Character Name", 
+                        $eachResponse["charactername"], 
+                        "Core Account", 
+                        $eachResponse["corename"]
+                    ]);
                     
                 }
                 
-                $output->formatOutput = true;
-                Header("Content-Type: text/xml");
-                echo $output->saveXML();
+                fclose($output);
                 
             }
             else {

@@ -158,8 +158,8 @@ function getInfo(pollID) {
             $("#details-name").text(result["Poll Name"]);
             
             $("#user-auth-url").val(authURL.toString());
-            $("#all-response-tokens").val("=IMPORTXML(\"" + allResponseURL.toString() + "\", \"//*\")");
-            $("#single-token").val("=IMPORTXML(\"" + singleResponseURL + "\", \"//*\")");
+            $("#all-response-tokens").val("=IMPORTDATA(\"" + allResponseURL.toString() + "\")");
+            $("#single-token").val("=IMPORTDATA(\"" + singleResponseURL + "\")");
             
         },
         error: function(result) {
