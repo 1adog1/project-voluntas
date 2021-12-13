@@ -6,3 +6,6 @@ changes.txt
 
 # caches
 __pycache__/
+
+# vendor
+vendor/
