@@ -46,7 +46,7 @@
             
             if (!empty($responseData)) {
                 
-                $output = new \SimpleXMLElement("<xml/>");
+                $output = new \SimpleXMLElement("<?xml version='1.0' encoding='uft-8'?><xml/>");
                 
                 foreach ($responseData as $eachResponse) {
                     
@@ -79,7 +79,7 @@
             
             if (!empty($responseData)) {
                 
-                $output = new \SimpleXMLElement("<xml/>");
+                $output = new \SimpleXMLElement("<?xml version='1.0' encoding='uft-8'?><xml/>");
                 
                 foreach ($responseData as $eachResponse) {
                     
