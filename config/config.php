@@ -2,7 +2,7 @@
 
     $configVariables = [];
 
-    $configData = parse_ini_file(__DIR__ . "/config.ini");
+    $configData = (file_exists(__DIR__ . "/config.ini")) ? parse_ini_file(__DIR__ . "/config.ini") : parse_ini_file(__DIR__ . "/config.ini.dist");
     
     //EVE AUTHENTICATION CONFIGURATION
     $configVariables["Client ID"] = (isset($_ENV["Client_ID"])) ? $_ENV["Client_ID"] : $configData["ClientID"];
