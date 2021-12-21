@@ -254,7 +254,11 @@
                 
                 $this->updateLastPage($pageData["Name"]);
                 
-                $this->pageHandlingLogger->make_log_entry("Access Granted", $pageData["Name"], $this->userName, ("Login Status (Required / Provided): " . ($pageData["Login Required"] ? "True" : "False") . " / " . ($this->isLoggedIn ? "True" : "False") . "\nRoles (Required / Provided): (" . implode(", ", $pageData["Access Roles"]) . ") / (" . implode(", ", $this->userAccessRoles) . ")"));
+                if ($pageData["Name"] !== "Verify" and $pageData["Name"] !== "Authenticate") {
+                    
+                    $this->pageHandlingLogger->make_log_entry("Access Granted", $pageData["Name"], $this->userName, ("Login Status (Required / Provided): " . ($pageData["Login Required"] ? "True" : "False") . " / " . ($this->isLoggedIn ? "True" : "False") . "\nRoles (Required / Provided): (" . implode(", ", $pageData["Access Roles"]) . ") / (" . implode(", ", $this->userAccessRoles) . ")"));
+                    
+                }
                 
             }
             
@@ -276,7 +280,11 @@
             
             $this->updateLastPage($this->pageTable["unknown"]["Name"]);
             
-            $this->pageHandlingLogger->make_log_entry("Access Denied", $pageData["Name"], $this->userName, ("Login Status (Required / Provided): " . ($pageData["Login Required"] ? "True" : "False") . " / " . ($this->isLoggedIn ? "True" : "False") . "\nRoles (Required / Provided): (" . implode(", ", $pageData["Access Roles"]) . ") / (" . implode(", ", $this->userAccessRoles) . ")"));
+            if (!($pageData["Name"] === "Authenticate" and !$this->isLoggedIn)) {
+                
+                $this->pageHandlingLogger->make_log_entry("Access Denied", $pageData["Name"], $this->userName, ("Login Status (Required / Provided): " . ($pageData["Login Required"] ? "True" : "False") . " / " . ($this->isLoggedIn ? "True" : "False") . "\nRoles (Required / Provided): (" . implode(", ", $pageData["Access Roles"]) . ") / (" . implode(", ", $this->userAccessRoles) . ")"));
+                
+            }
             
             $this->setPageDetails($this->pageTable["unknown"]);
             
