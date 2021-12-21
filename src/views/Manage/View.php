@@ -80,7 +80,7 @@
             
             foreach ($this->model->polls[$category] as $eachPoll) {
                 
-                $anonymous_icon = ($eachPoll["anonymity"]) ? "eye-slash-fill": "eye-fill";
+                $anonymous_icon = ($eachPoll["anonymity"]) ? "bi bi-eye-slash-fill": "bi bi-eye-fill";
                 
                 if (!is_null($eachPoll["percorelimit"])) {
                     
@@ -106,7 +106,7 @@
                 <div class="card alert-secondary mt-3">
                 
                     <div class="card-header h5">
-                        <img src="/resources/images/icons/<?php echo $anonymous_icon; ?>.svg" width="24" height="24">
+                        <i class="<?php echo $anonymous_icon; ?>"></i>
                         <?php echo htmlspecialchars($eachPoll["name"]); ?>
                     </div>
                 

@@ -38,13 +38,13 @@
             $is_anonymous = $this->model->pollDetails["Anonymity"];
             
             $anonymous_color = ($is_anonymous) ? "success" : "warning";
-            $anonymous_icon = ($is_anonymous) ? "eye-slash-fill": "eye-fill";
+            $anonymous_icon = ($is_anonymous) ? "bi bi-eye-slash-fill": "bi bi-eye-fill";
             $anonymous_text = ($is_anonymous) ? "This poll is anonymous. Your response will not be associated with your name." : "This poll is NOT anonymous. Your name will be attached to your response.";
             
             ?>
             
             <div class="alert alert-<?php echo $anonymous_color; ?> text-center fw-bold">
-                <img src="/resources/images/icons/<?php echo $anonymous_icon; ?>.svg" width="32" height="32">
+                <i class="<?php echo $anonymous_icon; ?>"></i>
                 <?php echo $anonymous_text; ?>
             </div>
             
