@@ -13,15 +13,16 @@
         protected $esiHandler;
         
         public function __construct(
-            protected $authorizationLogger, 
-            protected $authorizationConnection, 
-            protected $authorizationVariables
+            protected $authorizationLogger,
+            protected $authorizationConnection,
+            protected $authorizationVariables,
+            protected $authorizationVersionVariables
         ) {
-            
-            $this->esiHandler = new \Ridley\Objects\ESI\Handler($authorizationConnection);
-            
+
+            $this->esiHandler = new \Ridley\Objects\ESI\Handler($this->authorizationConnection, $this->authorizationVersionVariables);
+
             $this->cleanupLogins();
-            
+
         }
         
         public function login($loginType, $loginScopes) {
@@ -80,7 +81,7 @@
             $parsedURL = parse_url($rawURL, PHP_URL_PATH);
             $parsedPath = preg_split(
                 pattern: "@/@", 
-                subject: $parsedURL, 
+                subject: ($parsedURL ?? ""),
                 flags: PREG_SPLIT_NO_EMPTY
             );
             

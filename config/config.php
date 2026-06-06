@@ -1,48 +1,114 @@
 <?php
 
     $configVariables = [];
+    $versionVariables = [];
 
-    $configData = (file_exists(__DIR__ . "/config.ini")) ? parse_ini_file(__DIR__ . "/config.ini") : parse_ini_file(__DIR__ . "/config.ini.dist");
-    
-    //EVE AUTHENTICATION CONFIGURATION
-    $configVariables["Client ID"] = (isset($_ENV["Client_ID"])) ? $_ENV["Client_ID"] : $configData["ClientID"];
-    $configVariables["Client Secret"] = (isset($_ENV["Client_Secret"])) ? $_ENV["Client_Secret"] : $configData["ClientSecret"];
-    $configVariables["Client Scopes"] = (isset($_ENV["Client_Scopes"])) ? $_ENV["Client_Scopes"] : $configData["ClientScopes"];
-    $configVariables["Default Scopes"] = (isset($_ENV["Default_Scopes"])) ? $_ENV["Default_Scopes"] : $configData["DefaultScopes"];
-    $configVariables["Client Redirect"] = (isset($_ENV["Client_Redirect"])) ? $_ENV["Client_Redirect"] : $configData["ClientRedirect"];
-    $configVariables["Auth Type"] = (isset($_ENV["Auth_Type"])) ? $_ENV["Auth_Type"] : $configData["AuthType"];
-    $configVariables["Super Admins"] = (isset($_ENV["Super_Admins"])) ? explode(",", str_replace(" ", "", $_ENV["Super_Admins"])) : explode(",", str_replace(" ", "", $configData["SuperAdmins"]));
-    
-    //NEUCORE AUTHENTICATION CONFIGURATION
-    $configVariables["NeuCore ID"] = (isset($_ENV["App_ID"])) ? $_ENV["App_ID"] : $configData["AppID"];
-    $configVariables["NeuCore Secret"] = (isset($_ENV["App_Secret"])) ? $_ENV["App_Secret"] : $configData["AppSecret"];
-    $configVariables["NeuCore URL"] = (isset($_ENV["App_URL"])) ? $_ENV["App_URL"] : $configData["AppURL"];
-    
-    //DATABASE SERVER CONFIGURATION
-    $configVariables["Database Server"] = (isset($_ENV["Database_Server"])) ? $_ENV["Database_Server"] : ($configData["DatabaseServer"] . ":" . $configData["DatabasePort"]);
-    $configVariables["Database Username"] = (isset($_ENV["Database_Username"])) ? $_ENV["Database_Username"] : $configData["DatabaseUsername"];
-    $configVariables["Database Password"] = (isset($_ENV["Database_Password"])) ? $_ENV["Database_Password"] : $configData["DatabasePassword"];
-    
-    //DATABASE NAME CONFIGURATION
-    $configVariables["Database Name"] = (isset($_ENV["Database_Name"])) ? $_ENV["Database_Name"] : $configData["DatabaseName"];
-    
-    //JawsDB Maria Support (For Heroku)
-    if (isset($_ENV["JAWSDB_MARIA_URL"])) {
-        
-        $jawsDBURL = parse_url($_ENV["JAWSDB_MARIA_URL"]);
-        
-        $configVariables["Database Server"] = $jawsDBURL["host"];
-        $configVariables["Database Username"] = $jawsDBURL["user"];
-        $configVariables["Database Password"] = $jawsDBURL["pass"];
-        $configVariables["Database Name"] = ltrim($jawsDBURL["path"], "/");
-        
+    if (file_exists(__DIR__ . "/config.ini")) {
+
+        $configData = parse_ini_file(__DIR__ . "/config.ini", true);
+
+        //EVE AUTHENTICATION CONFIGURATION
+        $configVariables["Client ID"] = $configData["Eve Authentication"]["ClientID"];
+        $configVariables["Client Secret"] = $configData["Eve Authentication"]["ClientSecret"];
+        $configVariables["Client Scopes"] = $configData["Eve Authentication"]["ClientScopes"];
+        $configVariables["Default Scopes"] = $configData["Eve Authentication"]["DefaultScopes"];
+        $configVariables["Client Redirect"] = $configData["Eve Authentication"]["ClientRedirect"];
+        $configVariables["Client Contact Info"] = $configData["Eve Authentication"]["ClientContactInfo"];
+        $configVariables["Auth Type"] = $configData["Eve Authentication"]["AuthType"];
+        $configVariables["Super Admins"] = explode(",", str_replace(" ", "", $configData["Eve Authentication"]["SuperAdmins"]));
+
+        //NEUCORE AUTHENTICATION CONFIGURATION
+        $configVariables["NeuCore ID"] = $configData["NeuCore Authentication"]["AppID"];
+        $configVariables["NeuCore Secret"] = $configData["NeuCore Authentication"]["AppSecret"];
+        $configVariables["NeuCore URL"] = $configData["NeuCore Authentication"]["AppURL"];
+
+        //DATABASE SERVER CONFIGURATION
+        $configVariables["Database Server"] = $configData["Database"]["DatabaseServer"] . ":" . $configData["Database"]["DatabasePort"];
+        $configVariables["Database Username"] = $configData["Database"]["DatabaseUsername"];
+        $configVariables["Database Password"] = $configData["Database"]["DatabasePassword"];
+
+        //DATABASE NAME CONFIGURATION
+        $configVariables["Database Name"] = $configData["Database"]["DatabaseName"];
+
+        //SITE CONFIGURATION
+        $configVariables["Auth Cookie Name"] = $configData["Website"]["AuthCookieName"];
+        $configVariables["Session Time"] = $configData["Website"]["SessionTime"];
+        $configVariables["Auth Cache Time"] = $configData["Website"]["AuthCacheTime"];
+        $configVariables["Store Visitor IPs"] = boolval($configData["Website"]["StoreVisitorIPs"]);
+
     }
-    
-    //SITE CONFIGURATION
-    $configVariables["Auth Cookie Name"] = (isset($_ENV["Auth_Cookie_Name"])) ? $_ENV["Auth_Cookie_Name"] : $configData["AuthCookieName"];
-    $configVariables["Session Time"] = (isset($_ENV["Session_Time"])) ? $_ENV["Session_Time"] : $configData["SessionTime"];
-    $configVariables["Auth Cache Time"] = (isset($_ENV["Auth_Cache_Time"])) ? $_ENV["Auth_Cache_Time"] : $configData["AuthCacheTime"];
-    $configVariables["Max Table Rows"] = (isset($_ENV["Max_Table_Rows"])) ? $_ENV["Max_Table_Rows"] : $configData["MaxTableRows"];
-    $configVariables["Store Visitor IPs"] = (isset($_ENV["Store_Visitor_IPs"])) ? boolval($_ENV["Store_Visitor_IPs"]) : boolval($configData["StoreVisitorIPs"]);
+    else {
+
+        //$_ENV doesn't seem to always work, making our own array instead.
+        $ENVS = getenv();
+
+        //EVE AUTHENTICATION CONFIGURATION
+        $configVariables["Client ID"] = $ENVS["ENV_VOLUNTAS_EVE_CLIENT_ID"];
+        $configVariables["Client Secret"] = $ENVS["ENV_VOLUNTAS_EVE_CLIENT_SECRET"];
+        $configVariables["Client Scopes"] = $ENVS["ENV_VOLUNTAS_EVE_CLIENT_SCOPES"] ?? "esi-search.search_structures.v1";
+        $configVariables["Default Scopes"] = $ENVS["ENV_VOLUNTAS_EVE_DEFAULT_SCOPES"] ?? "esi-search.search_structures.v1";
+        $configVariables["Client Redirect"] = $ENVS["ENV_VOLUNTAS_EVE_CLIENT_REDIRECT"];
+        $configVariables["Client Contact Info"] = $ENVS["ENV_VOLUNTAS_EVE_CLIENT_CONTACT_INFO"];
+        $configVariables["Auth Type"] = $ENVS["ENV_VOLUNTAS_EVE_AUTH_TYPE"] ?? "Neucore";
+        $configVariables["Super Admins"] = explode(",", str_replace(" ", "", $ENVS["ENV_VOLUNTAS_EVE_SUPER_ADMINS"]));
+
+        //NEUCORE AUTHENTICATION CONFIGURATION
+        $configVariables["NeuCore ID"] = $ENVS["ENV_VOLUNTAS_NEUCORE_APP_ID"] ?? NULL;
+        $configVariables["NeuCore Secret"] = $ENVS["ENV_VOLUNTAS_NEUCORE_APP_SECRET"] ?? NULL;
+        $configVariables["NeuCore URL"] = $ENVS["ENV_VOLUNTAS_NEUCORE_APP_URL"] ?? NULL;
+
+        //DATABASE SERVER CONFIGURATION
+        $configVariables["Database Server"] = $ENVS["ENV_VOLUNTAS_DATABASE_SERVER"] . ":" . $ENVS["ENV_VOLUNTAS_DATABASE_PORT"];
+        $configVariables["Database Username"] = $ENVS["ENV_VOLUNTAS_DATABASE_USERNAME"];
+        $configVariables["Database Password"] = $ENVS["ENV_VOLUNTAS_DATABASE_PASSWORD"];
+
+        //DATABASE NAME CONFIGURATION
+        $configVariables["Database Name"] = $ENVS["ENV_VOLUNTAS_DATABASE_NAME"];
+
+        //SITE CONFIGURATION
+        $configVariables["Auth Cookie Name"] = $ENVS["ENV_VOLUNTAS_WEBSITE_AUTH_COOKIE"] ?? "VoluntasAuthID";
+        $configVariables["Session Time"] = (int)($ENVS["ENV_VOLUNTAS_WEBSITE_SESSION_TIME"] ?? 86400);
+        $configVariables["Auth Cache Time"] = (int)($ENVS["ENV_VOLUNTAS_WEBSITE_AUTH_CACHE_TIME"] ?? 0);
+        $configVariables["Store Visitor IPs"] = boolval(($ENVS["ENV_VOLUNTAS_WEBSITE_STORE_IPS"] ?? 0));
+
+    }
+
+    $versionData = parse_ini_file(__DIR__ . "/VERSIONING", true);
+
+    $applicationVersionArray = [
+        $versionData["App"]["major_version"], 
+        $versionData["App"]["minor_version"], 
+        $versionData["App"]["patch_version"]
+    ];
+    $overhaulVersionArray = [
+        $versionData["Overhaul"]["major_version"], 
+        $versionData["Overhaul"]["minor_version"], 
+        $versionData["Overhaul"]["patch_version"]
+    ];
+    $bootstrapVersionArray = [
+        $versionData["Bootstrap"]["major_version"], 
+        $versionData["Bootstrap"]["minor_version"], 
+        $versionData["Bootstrap"]["patch_version"]
+    ];
+    $bootstrapIconsVersionArray = [
+        $versionData["Bootstrap Icons"]["major_version"], 
+        $versionData["Bootstrap Icons"]["minor_version"], 
+        $versionData["Bootstrap Icons"]["patch_version"]
+    ];
+    $jQueryVersionArray = [
+        $versionData["jQuery"]["major_version"], 
+        $versionData["jQuery"]["minor_version"], 
+        $versionData["jQuery"]["patch_version"]
+    ];
+
+    $versionVariables["App Name"] = $versionData["App"]["app_name"];
+    $versionVariables["App Version"] = implode($versionData["App"]["delimiter"], $applicationVersionArray);
+    $versionVariables["App Github"] = $versionData["App"]["github_link"];
+    $versionVariables["Overhaul Version"] = implode($versionData["Overhaul"]["delimiter"], $overhaulVersionArray);
+    $versionVariables["Overhaul Github"] = $versionData["Overhaul"]["github_link"];
+    $versionVariables["Bootstrap Version"] = implode(".", $bootstrapVersionArray);
+    $versionVariables["Bootstrap Icons Version"] = implode(".", $bootstrapIconsVersionArray);
+    $versionVariables["jQuery Version"] = implode(".", $jQueryVersionArray);
+    $versionVariables["Client Contact Info"] = $configVariables["Client Contact Info"];
     
 ?>

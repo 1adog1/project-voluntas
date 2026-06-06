@@ -8,6 +8,7 @@
         private $logger;
         private $isLoggedIn;
         private $configVariables;
+        private $versionVariables;
         
         public function __construct(
             private \Ridley\Core\Dependencies\DependencyManager $dependencies
@@ -17,6 +18,7 @@
             $this->logger = $this->dependencies->get("Logging");
             $this->isLoggedIn = $this->dependencies->get("Login Status");
             $this->configVariables = $this->dependencies->get("Configuration Variables");
+            $this->versionVariables = $this->dependencies->get("Version Variables");
             
             $rawURL = urldecode($_SERVER["REQUEST_URI"]);
             $parsedURL = parse_url($rawURL, PHP_URL_PATH);
@@ -31,7 +33,8 @@
                 $auth = new \Ridley\Core\Authorization\Base\AuthBase(
                     $this->logger, 
                     $this->databaseConnection, 
-                    $this->configVariables
+                    $this->configVariables,
+                    $this->versionVariables
                 );
                 
                 $auth->login("Default", $this->configVariables["Client Scopes"]);
